@@ -83,6 +83,7 @@
         </LinearLayout>
     </RelativeLayout>
 
+
     <FrameLayout
         android:paddingTop="7dp"
         android:paddingBottom="7dp"
@@ -96,6 +97,7 @@
         android:visibility="gone">
 
         <LinearLayout
+            android:layout_marginLeft="8dp"
             android:orientation="vertical"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
@@ -103,20 +105,27 @@
                 android:id="@+id/firstline"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="12dp"
                 android:textColor="#333333"
-                android:textSize="16sp" />
+                android:textSize="12sp" />
 
             <TextView
                 android:id="@+id/secondline"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/firstline"
-                android:layout_marginLeft="12dp"
                 android:gravity="left"
                 android:textColor="#999999"
-                android:textSize="13sp"
+                android:textSize="10sp"
                 android:visibility="visible" />
+
+            <TextView
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
+                android:textSize="7sp"
+                android:textColor="@color/red"
+                android:id="@+id/notetitel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
 
         </LinearLayout>
 

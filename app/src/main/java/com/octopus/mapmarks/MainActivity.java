@@ -48,7 +48,7 @@ public class MainActivity extends AppCompatActivity implements AMap.OnMyLocation
     private ProgressDialog progDialog = null;// 搜索时进度条
     private RelativeLayout mHeadLayout;
     private FrameLayout mBottomLayout;
-    private TextView mRotueTimeDes, mRouteDetailDes, mopenmap;
+    private TextView mRotueTimeDes, mRouteDetailDes, mopenmap ,notetitel;
 
     boolean isLocationChange = false; //是否定位完毕 默认没有
     boolean isGuihua = false; //是否定位完毕 默认没有
@@ -99,10 +99,16 @@ public class MainActivity extends AppCompatActivity implements AMap.OnMyLocation
 
         for (int i = 0; i < cvid_bjs.size(); i++) {
             CVID_BJ cvid_bj = cvid_bjs.get(i);
-            String note = "" + cvid_bj.getAddress() + "\r\n" + cvid_bj.getPhone() + "\r\n" + cvid_bj.getType();
-            mubiaolist.add(new MLatLonPoint(Double.parseDouble(cvid_bj.getMLatitude()), Double.parseDouble(cvid_bj.getMLongitude()), cvid_bj.getName(), note)); //北站
+
+            StringBuilder note = new StringBuilder();
+            note.append(cvid_bj.getAddress() + "\r\n");
+            note.append(cvid_bj.getPhone() + "\r\n");
+            note.append(cvid_bj.getType() + "");
+
+
+            mubiaolist.add(new MLatLonPoint(Double.parseDouble(cvid_bj.getMLatitude()), Double.parseDouble(cvid_bj.getMLongitude()), cvid_bj.getName(), note.toString())); //北站
             if (i > 20) {
-//                break;
+                break;
             }
         }
 
@@ -129,6 +135,7 @@ public class MainActivity extends AppCompatActivity implements AMap.OnMyLocation
         mRotueTimeDes = (TextView) findViewById(R.id.firstline);
         mRouteDetailDes = (TextView) findViewById(R.id.secondline);
         mopenmap = (TextView) findViewById(R.id.openmap);
+        notetitel = (TextView) findViewById(R.id.notetitel);
         mHeadLayout.setVisibility(View.GONE);
 
     }
@@ -423,13 +430,22 @@ public class MainActivity extends AppCompatActivity implements AMap.OnMyLocation
 
                         isGuihua = true;
 
-                        progDialog.setMessage("正在搜索:"+mDrivePath.size()+"/"+mubiaolist.size());
+                        progDialog.setMessage("正在搜索:" + mDrivePath.size() + "/" + mubiaolist.size());
 
                         mDrivePath.add(result);
 
                         if (mDrivePath != null && mDrivePath.size() > 0 && mDrivePath.size() == mubiaolist.size()) {
 
                             dissmissProgressDialog();
+
+                            if (notetitel != null){
+                                StringBuilder note = new StringBuilder();
+                                note.append("数据来源:北京市卫生健康委员会 日期:2021-01-09"+ "\r\n");
+                                note.append("地址:http://wjw.beijing.gov.cn/wjwh/ztzl/xxgzbd/gzbdyqtb/202101/t20210109_2210023.html"+ "\r\n");
+                                note.append("其他城市待更新");
+                                notetitel.setText(note.toString());
+                                notetitel.setVisibility(View.VISIBLE);
+                            }
 
                             //是否需要画
                             //查找最近的10个
