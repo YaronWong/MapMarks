@@ -83,52 +83,65 @@
         </LinearLayout>
     </RelativeLayout>
 
-    <RelativeLayout
+    <FrameLayout
+        android:paddingTop="7dp"
+        android:paddingBottom="7dp"
         android:id="@+id/bottom_layout"
         android:layout_width="match_parent"
-        android:layout_height="70dp"
+        android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:background="@drawable/bg_bottom_bar"
         android:gravity="center_vertical"
         android:padding="5dp"
-        android:visibility="gone">
+        android:visibility="visible">
 
-        <TextView
-            android:id="@+id/firstline"
+        <LinearLayout
+            android:orientation="vertical"
             android:layout_width="wrap_content"
-            android:layout_height="35dp"
-            android:layout_marginLeft="12dp"
-            android:singleLine="true"
-            android:textColor="#333333"
-            android:textSize="16sp" />
+            android:layout_height="wrap_content">
+            <TextView
+                android:id="@+id/firstline"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="12dp"
+                android:textColor="#333333"
+                android:textSize="16sp" />
 
-        <TextView
-            android:id="@+id/secondline"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/firstline"
-            android:layout_marginLeft="12dp"
-            android:gravity="right"
-            android:singleLine="true"
-            android:textColor="#999999"
-            android:textSize="13sp"
-            android:visibility="gone" />
+            <TextView
+                android:id="@+id/secondline"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/firstline"
+                android:layout_marginLeft="12dp"
+                android:gravity="left"
+                android:textColor="#999999"
+                android:textSize="13sp"
+                android:visibility="visible" />
+
+        </LinearLayout>
+
 
         <LinearLayout
             android:id="@+id/detail"
             android:layout_width="wrap_content"
             android:layout_height="35dp"
-            android:layout_alignParentRight="true"
             android:layout_marginRight="10dp"
-            android:gravity="center_vertical"
+            android:layout_marginBottom="10dp"
+            android:layout_gravity="right|bottom"
+            android:gravity="center"
             android:orientation="horizontal">
 
             <TextView
+                android:padding="7dp"
+                android:id="@+id/openmap"
+                android:paddingRight="7dp"
+                android:paddingLeft="7dp"
+                android:background="@color/color_1B85FF"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+                android:layout_height="60dp"
                 android:gravity="center_vertical"
-                android:text="详情"
-                android:textColor="@color/blue"
+                android:text="打开高德"
+                android:textColor="@color/white"
                 android:textSize="14sp" />
 
             <Button
@@ -138,7 +151,7 @@
                 android:background="@drawable/arrow_right_blue"
                 android:gravity="center_vertical" />
         </LinearLayout>
-    </RelativeLayout>
+    </FrameLayout>
 
     <com.amap.api.maps.MapView
         android:id="@+id/route_map"

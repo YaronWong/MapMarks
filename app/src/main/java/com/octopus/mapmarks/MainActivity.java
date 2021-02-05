@@ -52,6 +52,7 @@ public class MainActivity extends AppCompatActivity implements AMap.OnMyLocation
 
     boolean isLocationChange = false; //是否定位完毕 默认没有
     boolean isGuihua = false; //是否定位完毕 默认没有
+    final int nearNum = 15; //最近地点个数
 
     private AMap aMap;
     private MapView mMapView = null;
@@ -101,7 +102,7 @@ public class MainActivity extends AppCompatActivity implements AMap.OnMyLocation
             String note = "" + cvid_bj.getAddress() + "\r\n" + cvid_bj.getPhone() + "\r\n" + cvid_bj.getType();
             mubiaolist.add(new MLatLonPoint(Double.parseDouble(cvid_bj.getMLatitude()), Double.parseDouble(cvid_bj.getMLongitude()), cvid_bj.getName(), note)); //北站
             if (i > 20) {
-                break;
+//                break;
             }
         }
 
@@ -433,12 +434,12 @@ public class MainActivity extends AppCompatActivity implements AMap.OnMyLocation
                             Logger.d("targetPos: 排序前 " + mDrivePath.size());
                             Logxxxx(mDrivePath);
 
-                            List<DriveRouteResult> nearest = findNearest(mDrivePath, 10);
+                            List<DriveRouteResult> nearest = findNearest(mDrivePath, nearNum);
 
                             drawDrivePath(nearest);
 
                             //显示最时间最短的一个
-                            ToastUtil.show("已显示最近地点");
+                            ToastUtil.show("已经显示最近" + nearNum + "个地点");
 
                             showBottomLayout(nearest.get(0));
 
