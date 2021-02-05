@@ -93,7 +93,7 @@
         android:background="@drawable/bg_bottom_bar"
         android:gravity="center_vertical"
         android:padding="5dp"
-        android:visibility="visible">
+        android:visibility="gone">
 
         <LinearLayout
             android:orientation="vertical"

@@ -423,6 +423,8 @@ public class MainActivity extends AppCompatActivity implements AMap.OnMyLocation
 
                         isGuihua = true;
 
+                        progDialog.setMessage("正在搜索:"+mDrivePath.size()+"/"+mubiaolist.size());
+
                         mDrivePath.add(result);
 
                         if (mDrivePath != null && mDrivePath.size() > 0 && mDrivePath.size() == mubiaolist.size()) {
