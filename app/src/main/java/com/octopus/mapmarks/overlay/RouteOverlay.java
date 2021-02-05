@@ -15,6 +15,7 @@ import com.amap.api.maps.model.MarkerOptions;
 import com.amap.api.maps.model.Polyline;
 import com.amap.api.maps.model.PolylineOptions;
 import com.octopus.mapmarks.R;
+import com.octopus.mapmarks.util.AMapUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -127,11 +128,12 @@ public class RouteOverlay {
     protected void addStartAndEndMarker() {
         startMarker = mAMap.addMarker((new MarkerOptions()).position(startPoint).icon(getStartBitmapDescriptor()).title("\u8D77\u70B9"));
         // startMarker.showInfoWindow();
-
-        endMarker = mAMap.addMarker((new MarkerOptions()).position(endPoint).icon(getEndBitmapDescriptor()).title("\u7EC8\u70B9"));
+        endMarker = mAMap.addMarker((new MarkerOptions()).position(endPoint).icon(getEndBitmapDescriptor()).title("\u7EC8\u70B9")); //终点图标
         // mAMap.moveCamera(CameraUpdateFactory.newLatLngZoom(startPoint,
         // getShowRouteZoom()));
     }
+
+
 
     /**
      * 移动镜头到当前的视角。

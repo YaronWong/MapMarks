@@ -54,6 +54,7 @@ public class MLatLonPoint extends LatLonPoint {
         this.type = type;
     }
 
+
     public String getTitel() {
         return titel;
     }
