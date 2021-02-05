@@ -23,7 +23,7 @@ public class FileUtils {
 
 
     //读取 请求 填充
-    public static  List<com.octopus.mapmarks.CVID_BJ> initCuidJson() {
+    public static  List<CVID_BJ> initCuidJson() {
         Context context = App.getGlobalContext();
 
         String CVID_BJ = "CVID_BJ.json";

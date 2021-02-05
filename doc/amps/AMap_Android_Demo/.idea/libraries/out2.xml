@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="out">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/AMap_Android_API_3DMap_Demo/android_studio/AMap3DDemo/app/build/intermediates/merged_jni_libs/debug/out/Volley.jar!/" />
+      <root url="jar://$PROJECT_DIR$/AMap_Android_API_3DMap_Demo/android_studio/AMap3DDemo/app/build/intermediates/merged_jni_libs/debug/out/AMap_Location_V5.2.0_20200915.jar!/" />
+      <root url="jar://$PROJECT_DIR$/AMap_Android_API_3DMap_Demo/android_studio/AMap3DDemo/app/build/intermediates/merged_jni_libs/debug/out/AMap_Search_V7.7.0_20201027.jar!/" />
+      <root url="jar://$PROJECT_DIR$/AMap_Android_API_3DMap_Demo/android_studio/AMap3DDemo/app/build/intermediates/merged_jni_libs/debug/out/Android_Map3D_SDK_V7.8.0_20201231.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

@@ -3,12 +3,15 @@ package com.octopus.mapmarks.overlay;
 import android.os.Parcel;
 
 import com.amap.api.services.core.LatLonPoint;
+import com.amap.api.services.route.DriveRouteResult;
 
 public class MLatLonPoint extends LatLonPoint {
 
     private String titel;
     private String note;
     private int type;
+
+
 
     public MLatLonPoint(double v, double v1) {
         super(v, v1);

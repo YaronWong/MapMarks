@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="libs1">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/AMap_Android_API_Track_Demo/android_studio/AMapTrackDemo/app/libs/Android_Map3D_SDK_V7.8.0_20201231.jar!/" />
+      <root url="jar://$PROJECT_DIR$/AMap_Android_API_Track_Demo/android_studio/AMapTrackDemo/app/libs/AMapTrack_1.3.0_AMapLocation_4.9.0_20200426.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

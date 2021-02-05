@@ -1,13 +1,18 @@
 package com.octopus.mapmarks;
 
 import android.app.ProgressDialog;
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -25,6 +30,7 @@ import com.amap.api.services.route.DriveRouteResult;
 import com.amap.api.services.route.RideRouteResult;
 import com.amap.api.services.route.RouteSearch;
 import com.amap.api.services.route.WalkRouteResult;
+import com.octopus.mapmarks.comparator.MyComparator;
 import com.octopus.mapmarks.overlay.DrivingRouteOverlay;
 import com.octopus.mapmarks.overlay.MLatLonPoint;
 import com.octopus.mapmarks.util.AMapUtil;
@@ -33,14 +39,16 @@ import com.octopus.mapmarks.util.ToastUtil;
 import com.orhanobut.logger.Logger;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements AMap.OnMyLocationChangeListener {
 
     private Context mContext;
     private ProgressDialog progDialog = null;// 搜索时进度条
-    private RelativeLayout mBottomLayout, mHeadLayout;
-    private TextView mRotueTimeDes, mRouteDetailDes;
+    private RelativeLayout mHeadLayout;
+    private FrameLayout mBottomLayout;
+    private TextView mRotueTimeDes, mRouteDetailDes, mopenmap;
 
     boolean isLocationChange = false; //是否定位完毕 默认没有
     boolean isGuihua = false; //是否定位完毕 默认没有
@@ -53,6 +61,7 @@ public class MainActivity extends AppCompatActivity implements AMap.OnMyLocation
     private LatLonPoint mEndPoint = new LatLonPoint(39.995576, 116.481288);//终点，39.995576,116.481288
 
     private ArrayList<MLatLonPoint> mubiaolist = new ArrayList<MLatLonPoint>(); //目的地列表
+    private ArrayList<DriveRouteResult> mDrivePath = new ArrayList<DriveRouteResult>(); //目的结果
 
     private CARRouteSearchListener mRouteSearchListener;
 
@@ -83,14 +92,15 @@ public class MainActivity extends AppCompatActivity implements AMap.OnMyLocation
     private void testCVIDBI() {
 
         mubiaolist.clear();
+        mDrivePath.clear();
 
         List<CVID_BJ> cvid_bjs = FileUtils.initCuidJson();
 
         for (int i = 0; i < cvid_bjs.size(); i++) {
             CVID_BJ cvid_bj = cvid_bjs.get(i);
-            mubiaolist.add(new MLatLonPoint(Double.parseDouble(cvid_bj.getMLatitude()), Double.parseDouble(cvid_bj.getMLongitude()), cvid_bj.getName())); //北站
-
-            if (i > 20){
+            String note = "" + cvid_bj.getAddress() + "\r\n" + cvid_bj.getPhone() + "\r\n" + cvid_bj.getType();
+            mubiaolist.add(new MLatLonPoint(Double.parseDouble(cvid_bj.getMLatitude()), Double.parseDouble(cvid_bj.getMLongitude()), cvid_bj.getName(), note)); //北站
+            if (i > 20) {
                 break;
             }
         }
@@ -113,10 +123,11 @@ public class MainActivity extends AppCompatActivity implements AMap.OnMyLocation
 
     private void initView() {
 
-        mBottomLayout = (RelativeLayout) findViewById(R.id.bottom_layout);
+        mBottomLayout = (FrameLayout) findViewById(R.id.bottom_layout);
         mHeadLayout = (RelativeLayout) findViewById(R.id.routemap_header);
         mRotueTimeDes = (TextView) findViewById(R.id.firstline);
         mRouteDetailDes = (TextView) findViewById(R.id.secondline);
+        mopenmap = (TextView) findViewById(R.id.openmap);
         mHeadLayout.setVisibility(View.GONE);
 
     }
@@ -159,7 +170,6 @@ public class MainActivity extends AppCompatActivity implements AMap.OnMyLocation
 
 
         for (int i = 0; i < mubiaolist.size(); i++) {
-
 
             LatLonPoint latLonPoint = mubiaolist.get(i);
 
@@ -211,6 +221,13 @@ public class MainActivity extends AppCompatActivity implements AMap.OnMyLocation
                 String markerId = marker.getId();
                 String title = marker.getTitle();
 
+                //查找点
+                MLatLonPoint select = findMLatLonPointBytitle(title);
+                DriveRouteResult routeResult = findDriveRouteResultBytitle(select);
+                if (routeResult != null) {
+                    showBottomLayout(routeResult);
+                }
+
                 Logger.d("markerId:" + markerId);
                 Logger.d("title:" + title);
 
@@ -222,6 +239,40 @@ public class MainActivity extends AppCompatActivity implements AMap.OnMyLocation
 
         aMap.setOnMyLocationChangeListener(this);
 
+    }
+
+    private DriveRouteResult findDriveRouteResultBytitle(MLatLonPoint mlatlonpoint) {
+        DriveRouteResult mrouteResult = null;
+        for (int i = 0; i < mDrivePath.size(); i++) {
+            DriveRouteResult routeResult = mDrivePath.get(i);
+            LatLonPoint targetPos = routeResult.getTargetPos();
+            if (targetPos.getLatitude() == mlatlonpoint.getLatitude() && targetPos.getLongitude() == mlatlonpoint.getLongitude()) {
+                mrouteResult = routeResult;
+                break;
+            }
+
+        }
+        return mrouteResult;
+    }
+
+    /**
+     * 包含本地描述信息
+     *
+     * @param title
+     * @return
+     */
+    private MLatLonPoint findMLatLonPointBytitle(String title) {
+        MLatLonPoint latLonPoint = null;
+        if (mubiaolist != null) {
+            for (int i = 0; i < mubiaolist.size(); i++) {
+                MLatLonPoint mLatLonPoint = mubiaolist.get(i);
+                if (mLatLonPoint.getTitel().equals(title)) {
+                    latLonPoint = mLatLonPoint;
+                    break;
+                }
+            }
+        }
+        return latLonPoint;
     }
 
 
@@ -358,7 +409,6 @@ public class MainActivity extends AppCompatActivity implements AMap.OnMyLocation
         //TODO 汽车路径规划 结果
         private void handDriveRouteSearched(DriveRouteResult result, int errorCode) {
 
-            dissmissProgressDialog();
 //          aMap.clear();// 清理地图上的所有覆盖物
 
             if (errorCode == AMapException.CODE_AMAP_SUCCESS) {
@@ -372,46 +422,27 @@ public class MainActivity extends AppCompatActivity implements AMap.OnMyLocation
 
                         isGuihua = true;
 
-                        LatLonPoint targetPos = result.getTargetPos();
-                        //根据目的地 找对应的markst
+                        mDrivePath.add(result);
 
-                        Logger.d("targetPos:" + targetPos);
+                        if (mDrivePath != null && mDrivePath.size() > 0 && mDrivePath.size() == mubiaolist.size()) {
 
-                        MLatLonPoint mLatLonPoint = findlatLonPointBytargetPos(mubiaolist, targetPos);
+                            dissmissProgressDialog();
 
-                        DrivingRouteOverlay drivingRouteOverlay = new DrivingRouteOverlay(mContext, aMap, drivePath, mDriveRouteResult, null ,mLatLonPoint);
-                        drivingRouteOverlay.setNodeIconVisibility(false);//设置节点marker是否显示
-                        drivingRouteOverlay.setIsColorfulline(true);//是否用颜色展示交通拥堵情况，默认true
-                        drivingRouteOverlay.removeFromMap();
-                        drivingRouteOverlay.addToMap();
-                        drivingRouteOverlay.zoomToSpan();
+                            //是否需要画
+                            //查找最近的10个
+                            Logger.d("targetPos: 排序前 " + mDrivePath.size());
+                            Logxxxx(mDrivePath);
 
-                        mBottomLayout.setVisibility(View.VISIBLE);
-                        mBottomLayout.setVisibility(View.GONE);
+                            List<DriveRouteResult> nearest = findNearest(mDrivePath, 10);
 
-                        int dis = (int) drivePath.getDistance(); //公里
-                        int dur = (int) drivePath.getDuration(); //分钟
-                        String des = AMapUtil.getFriendlyTime(dur) + "(" + AMapUtil.getFriendlyLength(dis) + ")";
+                            drawDrivePath(nearest);
 
-                        mRotueTimeDes.setText(des);
-                        mRouteDetailDes.setVisibility(View.VISIBLE);
+                            //显示最时间最短的一个
+                            ToastUtil.show("已显示最近地点");
 
-                        int taxiCost = (int) mDriveRouteResult.getTaxiCost();
+                            showBottomLayout(nearest.get(0));
 
-                        mRouteDetailDes.setText("打车约" + taxiCost + "元");
-                        mBottomLayout.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-
-                                ToastUtil.show("打开详细");
-
-//                                Intent intent = new Intent(mContext, DriveRouteDetailActivity.class);
-//                                intent.putExtra("drive_path", drivePath);
-//                                intent.putExtra("drive_result", mDriveRouteResult);
-//                                startActivity(intent);
-
-                            }
-                        });
+                        }
 
                     } else if (result != null && result.getPaths() == null) {
                         ToastUtil.show(mContext, R.string.no_result);
@@ -423,6 +454,145 @@ public class MainActivity extends AppCompatActivity implements AMap.OnMyLocation
             } else {
                 ToastUtil.showerror(errorCode);
             }
+        }
+
+    }
+
+    private void updataLatLonPoint(DriveRouteResult result) {
+
+
+    }
+
+    /**
+     * 底部显示
+     *
+     * @param driveRouteResult
+     */
+    private void showBottomLayout(DriveRouteResult driveRouteResult) {
+
+        mBottomLayout.setVisibility(View.VISIBLE);
+
+        DrivePath drivePath = driveRouteResult.getPaths().get(0);
+
+        int dur = (int) drivePath.getDuration(); //分钟
+        int dis = (int) drivePath.getDistance(); //公里
+
+        //查找 mark信息
+
+        LatLonPoint targetPos = driveRouteResult.getTargetPos(); // 目标坐标
+
+        //根据目的地 找对应的markst
+        MLatLonPoint mLatLonPoint = findlatLonPointBytargetPos(mubiaolist, targetPos);
+        StringBuilder des = new StringBuilder();
+        des.append("" + mLatLonPoint.getTitel() + "\r\n");
+        des.append("" + mLatLonPoint.getNote() + "\r\n");
+        des.append("" + AMapUtil.getFriendlyTime(dur) + "(" + AMapUtil.getFriendlyLength(dis) + ")");
+
+        mRotueTimeDes.setText(des.toString());
+
+        mRouteDetailDes.setVisibility(View.VISIBLE);
+
+        int taxiCost = (int) mDriveRouteResult.getTaxiCost();
+        mRouteDetailDes.setText("打车约" + taxiCost + "元");
+
+
+        LatLonPoint pos = driveRouteResult.getTargetPos();
+
+        mopenmap.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                ToastUtil.show("打开高德导航");
+
+//              Uri uri = Uri.parse("geo:24.473306,118.123456");
+
+                String gao = "geo:" + pos.getLatitude() + "," + pos.getLongitude() + "";
+                Uri uri = Uri.parse(gao);
+                Intent in = new Intent(Intent.ACTION_VIEW, uri);
+                //查看是否有导航软件，没有导航软件提示用户安装
+                ComponentName componentName = in.resolveActivity(MainActivity.this.getPackageManager());
+                if (componentName == null) {
+                    Toast.makeText(MainActivity.this, "请先安装第三方导航软件", Toast.LENGTH_SHORT).show();
+                } else {
+                    startActivity(in);
+                }
+
+            }
+        });
+
+    }
+
+    /**
+     * 画出线路
+     *
+     * @param nearest
+     */
+    private void drawDrivePath(List<DriveRouteResult> nearest) {
+
+        for (int i = 0; i < nearest.size(); i++) {
+
+            DriveRouteResult driverouteresult = nearest.get(i);
+
+            DrivePath drivePath = driverouteresult.getPaths().get(0);
+
+            LatLonPoint targetPos = driverouteresult.getTargetPos(); // 目标坐标
+            //根据目的地 找对应的markst
+//            Logger.d("targetPos:" + targetPos);
+
+            MLatLonPoint mLatLonPoint = findlatLonPointBytargetPos(mubiaolist, targetPos);
+
+            Logger.d("targetPos mLatLonPoint:" + targetPos + " | " + mLatLonPoint.getTitel());
+
+            DrivingRouteOverlay drivingRouteOverlay = new DrivingRouteOverlay(mContext, aMap, drivePath, driverouteresult, null, mLatLonPoint);
+            drivingRouteOverlay.setNodeIconVisibility(false);//设置节点marker是否显示
+            drivingRouteOverlay.setIsColorfulline(true);//是否用颜色展示交通拥堵情况，默认true
+            drivingRouteOverlay.removeFromMap();
+            drivingRouteOverlay.addToMap();
+            drivingRouteOverlay.zoomToSpan();
+
+
+        }
+
+
+    }
+
+    /**
+     * 找到最近的 10个
+     *
+     * @param mDriveRouteResult
+     * @param subindex
+     * @return
+     */
+    private List<DriveRouteResult> findNearest(ArrayList<DriveRouteResult> mDriveRouteResult, int subindex) {
+
+        MyComparator mc = new MyComparator();
+        Collections.<DriveRouteResult>sort(mDriveRouteResult, mc);
+
+        if (subindex > mDriveRouteResult.size()) {
+            subindex = mDriveRouteResult.size() - 1;
+        }
+
+        //取前10个
+        List<DriveRouteResult> drivePaths = (List<DriveRouteResult>) mDriveRouteResult.subList(0, subindex);
+
+        Logger.d("targetPos: 排序后");
+        Logxxxx(mDrivePath);
+
+        return drivePaths;
+    }
+
+    private void Logxxxx(ArrayList<DriveRouteResult> mDriveRouteResult) {
+
+        for (int j = 0; j < mDriveRouteResult.size(); j++) {
+            DriveRouteResult driveRouteResult = mDriveRouteResult.get(j);
+
+            DrivePath drivePath = driveRouteResult.getPaths().get(0);
+
+            int dur = (int) drivePath.getDuration(); //分钟
+            int dis = (int) drivePath.getDistance(); //公里
+            String des = AMapUtil.getFriendlyTime(dur) + "(" + AMapUtil.getFriendlyLength(dis) + ")";
+            Logger.d("targetPos:[" + j + "]  " + des);
+
         }
 
     }

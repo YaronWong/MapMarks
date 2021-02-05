@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="gradle-wrapper2">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/AMap_Android_API_Location_Demo/android_studio/AMapLocationDemo/diagnose/gradle/wrapper/gradle-wrapper.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

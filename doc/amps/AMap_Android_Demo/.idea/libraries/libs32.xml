@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="libs3">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/AMap_Android_API_Location_Demo/android_studio/AMapLocationDemo/app/libs/AMap_Search_V7.7.0_20201027.jar!/" />
+      <root url="jar://$PROJECT_DIR$/AMap_Android_API_Location_Demo/android_studio/AMapLocationDemo/app/libs/AMap_Location_V5.2.0_20200915.jar!/" />
+      <root url="jar://$PROJECT_DIR$/AMap_Android_API_Location_Demo/android_studio/AMapLocationDemo/app/libs/android-support-v4.jar!/" />
+      <root url="jar://$PROJECT_DIR$/AMap_Android_API_Location_Demo/android_studio/AMapLocationDemo/app/libs/Android_Map3D_SDK_V7.8.0_20201231.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

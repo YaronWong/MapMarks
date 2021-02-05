@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="libs4">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/AMap_Android_API_Navi_Demo/android_studio/NaviDemo/app/libs/Msc.jar!/" />
+      <root url="jar://$PROJECT_DIR$/AMap_Android_API_Navi_Demo/android_studio/NaviDemo/app/libs/AMap3DMap_7.8.0_AMapNavi_7.8.0_20210104.jar!/" />
+      <root url="jar://$PROJECT_DIR$/AMap_Android_API_Navi_Demo/android_studio/NaviDemo/app/libs/AMap_Location_V5.2.0_20200915.jar!/" />
+      <root url="jar://$PROJECT_DIR$/AMap_Android_API_Navi_Demo/android_studio/NaviDemo/app/libs/AMap_Search_V7.7.0_20201027.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
