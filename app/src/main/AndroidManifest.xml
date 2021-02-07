@@ -32,10 +32,9 @@
             </intent-filter>
         </activity>
 
-
         <meta-data
             android:name="com.amap.api.v2.apikey"
-            android:value="88cdc1475caaece6da7fa3fd1b0a7e2a"></meta-data>
+            android:value="88cdc1475caaece6da7fa3fd1b0a7e2a"/>
 
     </application>
 
